@@ -1,78 +1,89 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// App.js
+import React, { useEffect } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-// ไม่ควรมี View, Text หรือ Component อื่นๆ ที่ไม่ได้อยู่ใน screens/ ใน App.js โดยตรง
-// import { View, Text, StyleSheet } from 'react-native'; // บรรทัดนี้อาจจะถูกลบออกไปถ้าไม่มีการใช้ View/Text ใน App.js โดยตรง
+import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'; // สำหรับไอคอน
-
-// นำเข้าหน้าจอต่างๆ
+// หน้าจอ
 import HomeScreen from './screens/HomeScreen';
-import LessonsMenuScreen from './screens/LessonsMenuScreen';
+import LessonListScreen from './screens/LessonListScreen';
 import LessonDetailScreen from './screens/LessonDetailScreen';
-import QuizScreen from './screens/QuizScreen';
-// import ProfileScreen from './screens/ProfileScreen'; // หากมีหน้า Profile
+import QuizScreen from './screens/LessonQuizScreen'; // <--- เพิ่มบรรทัดนี้
 
-const Tab = createBottomTabNavigator();
+// รักษา splash screen ไว้จนกว่าจะพร้อม
+SplashScreen.preventAutoHideAsync();
+
 const Stack = createStackNavigator();
 
-function LessonsStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="LessonsMenu" component={LessonsMenuScreen} />
-      <Stack.Screen name="LessonDetail" component={LessonDetailScreen} />
-    </Stack.Navigator>
-  );
-}
+// 🎨 ธีมน้ำเงินฟ้าน่ารัก
+const AppTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#E6F2FF',        // ฟ้าอ่อน
+    primary: '#4D9DE0',           // น้ำเงินสว่าง
+    card: '#B3DAF1',              // พื้นหลังการ์ด
+    text: '#2c3e50',              // น้ำเงินเข้ม
+    border: '#A0C4FF',
+    notification: '#4D9DE0',
+  },
+};
 
-export default function App() {
+const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === 'Home') {
-              iconName = focused ? 'home' : 'home';
-              return <AntDesign name={iconName} size={size} color={color} />;
-            } else if (route.name === 'Lessons') {
-              iconName = focused ? 'book' : 'book';
-              return <Feather name={iconName} size={size} color={color} />;
-            } else if (route.name === 'Quiz') {
-              iconName = focused ? 'questioncircleo' : 'questioncircleo';
-              return <AntDesign name={iconName} size={size} color={color} />;
-            }
+    <NavigationContainer theme={AppTheme}>
+      <StatusBar style="dark" />
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#4D9DE0', // น้ำเงินหลัก
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            shadowColor: '#000',
+            shadowOpacity: 0.1,
+            shadowRadius: 10,
+            elevation: 5,
           },
-          tabBarActiveTintColor: '#6A5ACD',
-          tabBarInactiveTintColor: '#ccc',
-          tabBarStyle: {
-            backgroundColor: '#2A2A5A',
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            height: 80,
-            paddingBottom: 10,
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 22,
+            fontFamily: 'sans-serif',
           },
-          tabBarLabelStyle: {
-            fontSize: 12,
+          cardStyle: {
+            backgroundColor: '#E6F2FF',
           },
-          headerShown: false,
-        })}
+        }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Lessons" component={LessonsStack} />
-        <Tab.Screen name="Quiz" component={QuizScreen} />
-      </Tab.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: '🏠 หน้าหลัก' }}
+        />
+        <Stack.Screen
+          name="LessonList"
+          component={LessonListScreen}
+          options={{ title: '📚 บทเรียนทั้งหมด' }}
+        />
+        <Stack.Screen
+          name="LessonDetail"
+          component={LessonDetailScreen}
+          options={({ route }) => ({
+            title: `📝 ${route.params?.title || 'บทเรียน'}`,
+          })}
+        />
+        <Stack.Screen // <--- เพิ่ม Stack.Screen สำหรับ QuizScreen
+          name="Quiz"
+          component={QuizScreen}
+          options={({ route }) => ({
+            title: `🧠 ${route.params?.lessonTitle || 'แบบทดสอบ'}`,
+          })}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
-// ไม่ควรมี StyleSheet.create หรือโค้ด UI อื่นๆ สำหรับ App.js โดยตรง ถ้า App.js ทำหน้าที่เป็นแค่ Navigator
-// const styles = StyleSheet.create({
-//   // ...
-// });
+export default App;
