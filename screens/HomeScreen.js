@@ -1,106 +1,97 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen'; // Keep for consistency, though its direct use might change
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'; // Import Image
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
-
-const HomeScreen = ({ navigation }) => {
-  useEffect(() => {
-    // No longer explicitly hiding splash screen here, App.js manages preventAutoHideAsync
-    // If the image itself is the splash screen, this component might load *after* it.
-    // If it's the home screen, the splash screen should have already hidden.
-    // For now, removing the direct hide here.
-    // You might manage SplashScreen.hideAsync() in App.js or a loading component.
-  }, []);
-
-  const handleStartPress = () => {
-    // Assuming 'Start!' button navigates to the main part of the app, e.g., LessonList
-    navigation.navigate('LessonList');
-  };
-
+export default function HomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Image
-            source={require('../assets/images/logo.png')} // Using the provided image as the main visual
-            style={styles.container}
-            resizeMode="contain"
-          />
-          {/* Based on the image, the text below the FluentUp logo */}
-          <Text style={styles.appName}>
-            (อีโมจิ) FluentUp (อีโมจิ)
-          </Text>
-          <Text style={styles.subtitle}>
-            Foreign Language Department
-          </Text>
-          <Text style={styles.subtitle}>
-            Chiangkhan School
-          </Text>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Image
+          source={require('../assets/logo.png')} // Adjust the path to your logo image
+          style={styles.logo}
+        />
+        <Text style={styles.title}>SDLC</Text>
+        <Text style={styles.title}>Software Development Life Cycle</Text>
+        <Text style={styles.subtitle}>วงจรการพัฒนาระบบ</Text>
 
-          <TouchableOpacity style={styles.startButton} onPress={handleStartPress}>
-            <Text style={styles.startButtonText}>Start!</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Lessons')}
+        >
+          <LinearGradient
+            colors={['#FF6B8B', '#6A5ACD']}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.gradient}
+          >
+            <Text style={styles.buttonText}>Start Learning</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
       </View>
-    </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF', // White background as per the image
-  },
   container: {
     flex: 1,
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center',     // Center content horizontally
-    backgroundColor: '#FFFFFF', // White background
+    backgroundColor: '#1E1E3F',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
-    alignItems: 'center', // Center items within this view
-    padding: 20,
-    width: '80%', // Adjust width as needed
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
-  mainImage: {
-    width: Dimensions.get('window').width * 0.7, // Make it responsive
-    height: Dimensions.get('window').width * 0.7, // Make it responsive, assuming square
-    marginBottom: 20,
+  logo: { // Add a new style for your logo
+    width: 350, // Adjust width as needed
+    height: 350, // Adjust height as needed
+    marginBottom: -100, // Space between logo and text
+    resizeMode: 'contain', // Or 'cover', 'stretch', etc.
   },
-  appName: {
-    fontSize: 24,
+  title: {
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#000000', // Black text
-    marginBottom: 5,
+    color: '#fff',
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#555555', // Grey text
-    textAlign: 'center',
-    marginBottom: 2,
-  },
-  startButton: {
-    backgroundColor: '#00008B', // Dark blue as seen in the image
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    marginTop: 40, // Space from text
-  },
-  startButtonText: {
-    color: '#ffffff', // White text
-    fontWeight: 'bold',
     fontSize: 18,
+    color: '#fff',
+    marginTop: 10,
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  button: {
+    borderRadius: 30,
+    width: 250,
+    height: 60,
+    overflow: 'hidden',
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  indicatorContainer: {
+    flexDirection: 'row',
+    marginTop: 50,
+  },
+  indicator: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#555',
+    marginHorizontal: 5,
+  },
+  activeIndicator: {
+    backgroundColor: '#fff',
   },
 });
-
-export default HomeScreen;
